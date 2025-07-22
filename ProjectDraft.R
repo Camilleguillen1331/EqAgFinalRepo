@@ -35,8 +35,15 @@ ggplot(CAES_data, aes(x = Traffic, y = Imp..Water.Bodies)) +
 # Filter data for a specific county
 CAES_data_filter <- CAES_data %>%
   filter(California.County %in% c("Imperial", "Los Angeles", "Kern", "Orange", "Riverside",
-                       "San Bernardino", "San Diego", "San Luis Obispo", 
-                       "Santa Barbara", "Ventura"))
+                       "San Bernardino", "San Diego", "San Luis Obispo",
+                                        "Santa Barbara", "Ventura")) 
+
+
+CAES_data_filter <- CAES_data_filter %>%
+  filter(Traffic < 8000)
+
+
+
 # re run the plots 
 ggplot(CAES_data_filter, aes(x = Traffic )) +
   geom_histogram(binwidth = 1000, fill = "steelblue", color = "white") +
@@ -92,6 +99,9 @@ plot(x =CAES_data_filter$Traffic, y=CAES_data_filter$Imp..Water.Bodies)
 
 CAES_data_filter$logdata <- log10(CAES_data_filter$Imp..Water.Bodies)
 
+CAES_data_filter$logdata <- asinh(CAES_data_filter$Imp..Water.Bodies)
+
+
 sink(file = "logdata.txt")
 summary(object = Regression_one)
 sink()
@@ -107,6 +117,21 @@ summary(Regression_one)
 
 # run linear model 
 
+ols <- lm(logdata ~ Traffic, data = CAES_data_filter)
+summary(ols)
+
+plot(x = CAES_data_filter$Traffic,
+     y = CAES_data_filter$logdata,
+     xlab = "Traffic",
+     ylab = "Impared Water Badies")
+abline(CAES_data_filter$Traffic,CAES_data_filter$logdata)
+
+ggplot(CAES_data_filter, aes(x =CAES_data_filter$Traffic , y =CAES_data_filter$logdata )) +
+  geom_point(color = "purple", alpha = 0.6, size = 2) +
+  labs(title = "Scatter Plot of Traffic vs. Impared Water Bodies",
+       x = "Impared Water Bodiesc",
+       y = "Traffic") +
+  theme_bw()
 
 
 
