@@ -50,5 +50,63 @@ ggplot(CAES_data_filter, aes(x = Traffic, y = Imp..Water.Bodies)) +
        y = "Impared Water Bodies") +
   theme_minimal()
 
+# taking out zeros 
+CAES_data_filter_zeros <- CAES_data_filter %>%
+  filter(Imp..Water.Bodies !=0)
+
+
+# scatter plot 
+ggplot(CAES_data_filter_zeros, aes(x = Traffic, y = Imp..Water.Bodies)) +
+  geom_point(color = "steelblue", alpha = 0.6, size = 2) +
+  labs(title = "Scatter Plot of Traffic vs. Impared Water Bodies",
+       x = "Traffic",
+       y = "Impared Water Bodies") +
+  theme_minimal()
+
+ggplot(CAES_data_filter_zeros, aes(x = Imp..Water.Bodies, y = Traffic)) +
+  geom_point(color = "steelblue", alpha = 0.6, size = 2) +
+  labs(title = "Scatter Plot of Traffic vs. Impared Water Bodies",
+       x = "Impared Water Bodiesc",
+       y = "Traffic") +
+  theme_minimal()
+
+# regression one
+
+Regression_one <- aov(formula = Traffic ~ Imp..Water.Bodies, data = CAES_data_filter)
+
+# summary
+
+summary(object= Regression_one)
+
+# save output 
+
+sink(file = "traffic_water_anova.txt")
+summary(object = Regression_one)
+sink()
+
+# linear regression 
+
+plot(x =CAES_data_filter$Traffic, y=CAES_data_filter$Imp..Water.Bodies)
+
+# log transformation
+
+CAES_data_filter$logdata <- log10(CAES_data_filter$Imp..Water.Bodies)
+
+sink(file = "logdata.txt")
+summary(object = Regression_one)
+sink()
+
+# plot 
+plot(x = CAES_data_filter$Traffic,
+     y = CAES_data_filter$logdata,
+     xlab = "Traffic",
+     ylab = "Impared Water Badies")
+
+
+summary(Regression_one)
+
+# run linear model 
+
+
 
 
