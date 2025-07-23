@@ -230,13 +230,13 @@ ggplot(CAES_data_binary, aes(x = factor(any_impairment), y = Traffic, fill = fac
     fill = "Impairment"
   ) +
   scale_x_discrete(labels = c("0" = "No Impairment", "1" = "Yes Impairment")) +
-  theme_minimal()
+  theme_void()
 
 table(CAES_data_binary$any_impairment)
 
 # filter the data 
 CAES_data_binary <- CAES_data_binary %>%
-  filter(Traffic < 25000)
+  filter(Traffic < 2000)
 
 # violin plot
 ggplot(CAES_data_binary, aes(x = factor(any_impairment), y = Traffic, fill = factor(any_impairment))) +
@@ -275,7 +275,7 @@ ggplot(CAES_data_binary, aes(x = factor(any_impairment), y = Traffic, fill = fac
 ggplot(CAES_data_binary, aes(x = factor(any_impairment), y = Traffic, fill = factor(any_impairment))) +
   geom_violin(trim = FALSE) +
   geom_boxplot(width = 0.1, fill = "black", outlier.shape = NA) +
-  stat_summary(fun = mean, geom = "point", shape = 23, size = 3, fill = "green") +
+  stat_summary(fun = mean, geom = "point", shape = 22, size = 5, fill = "green") +
   scale_fill_manual(
     values = c("0" = "lightgray", "1" = "purple"),
     labels = c("No Impairment", "Yes Impairment")
@@ -288,6 +288,7 @@ ggplot(CAES_data_binary, aes(x = factor(any_impairment), y = Traffic, fill = fac
   ) +
   scale_x_discrete(labels = c("0" = "No Impairment", "1" = "Yes Impairment")) +
   theme_minimal()
+
 
 
 
