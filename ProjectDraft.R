@@ -126,12 +126,169 @@ plot(x = CAES_data_filter$Traffic,
      ylab = "Impared Water Badies")
 abline(CAES_data_filter$Traffic,CAES_data_filter$logdata)
 
-ggplot(CAES_data_filter, aes(x =CAES_data_filter$Traffic , y =CAES_data_filter$logdata )) +
-  geom_point(color = "purple", alpha = 0.6, size = 2) +
-  labs(title = "Scatter Plot of Traffic vs. Impared Water Bodies",
-       x = "Impared Water Bodiesc",
-       y = "Traffic") +
+ggplot(CAES_data_filter_zeros, aes(x = Traffic, y = Imp..Water.Bodies)) +
+  geom_point(color = "steelblue", alpha = 0.4, size = 2) +
+  geom_smooth(method = "lm", color = "black", se = FALSE, linetype = "dashed") +
+  labs(
+    title = "Scatter Plot of Traffic vs. Impaired Water Bodies",
+    x = "Traffic",
+    y = "Impaired Water Bodies"
+  ) +
   theme_bw()
+
+# making a table 
+
+# Install and load broom if you haven't already
+install.packages("broom")  # Only if not installed
+library(broom)
+
+# regression table
+regression_table <- tidy(ols)
+
+print(regression_table)
+
+
+regression_table <- tidy(ols, conf.int = TRUE)
+
+library(gt)
+regression_table %>%
+  gt()
+
+write.csv(regression_table, "regression_table.csv", row.names = FALSE)
+
+
+
+
+# Step 1: Create a binary variable: 1 if impaired water bodies > 0, else 0
+CAES_data_binary <- CAES_data_filter %>%
+  mutate(any_impairment = ifelse(Imp..Water.Bodies > 0, 1, 0))
+
+# Step 2: Run logistic regression (binary outcome)
+regression_binary <- glm(any_impairment ~ Traffic, data = CAES_data_binary, family = binomial)
+
+# Step 3: View summary of the model
+summary(regression_binary)
+
+# Step 4: Get tidy regression table with odds ratios and confidence intervals
+regression_table_binary <- tidy(regression_binary, conf.int = TRUE, exponentiate = TRUE)
+
+# Step 5: Print the tidy table
+print(regression_table_binary)
+
+ggplot(CAES_data_binary, aes(x = Traffic, y = any_impairment)) +
+  geom_jitter(height = 0.1, color = "blue", alpha = 0.6, size = 2) +
+  labs(
+    title = "Scatter Plot of Traffic vs. Impairment Presence",
+    x = "Traffic Volume",
+    y = "Impairment Presence (0 = No, 1 = Yes)"
+  ) +
+  theme_minimal()
+
+
+
+# trying to add line of best fit 
+ggplot(CAES_data_binary, aes(x = Traffic, y = any_impairment)) +
+  geom_jitter(height = 0.1, color = "blue", alpha = 0.6, size = 2) +
+  geom_smooth(
+    method = "glm",
+    method.args = list(family = "binomial"),
+    se = TRUE,
+    color = "red"
+  ) +
+  labs(
+    title = "Scatter Plot of Traffic vs. Impairment Presence",
+    x = "Traffic Volume",
+    y = "Impairment Presence (0 = No, 1 = Yes)"
+  ) +
+  theme_minimal()
+
+# without line of best fit
+ggplot(CAES_data_binary, aes(x = Traffic, y = any_impairment)) +
+  geom_jitter(height = 0.1, color = "blue", alpha = 0.6, size = 2) +
+  geom_smooth(
+  ) +
+  coord_cartesian(xlim = c(min(CAES_data_binary$Traffic), max(CAES_data_binary$Traffic)),
+                  ylim = c(0.95, 1.05)) +  # zoom in to only show y ≈ 1
+  labs(
+    title = "Zoomed In: High Impairment Cases (Impaired > 1)",
+    x = "Traffic Volume",
+    y = "Impairment Presence (0 = No, 1 = Yes)"
+  ) +
+  theme_minimal()
+
+# trying to make box plot 
+ggplot(CAES_data_binary, aes(x = factor(any_impairment), y = Traffic, fill = factor(any_impairment))) +
+  geom_boxplot() +
+  scale_fill_manual(
+    values = c("0" = "lightgray", "1" = "skyblue"),
+    labels = c("No Impairment", "Yes Impairment")
+  ) +
+  labs(
+    title = "Boxplot of Traffic by Impairment Status",
+    x = "Impairment Presence",
+    y = "Traffic Volume",
+    fill = "Impairment"
+  ) +
+  scale_x_discrete(labels = c("0" = "No Impairment", "1" = "Yes Impairment")) +
+  theme_minimal()
+
+table(CAES_data_binary$any_impairment)
+
+# filter the data 
+CAES_data_binary <- CAES_data_binary %>%
+  filter(Traffic < 25000)
+
+# violin plot
+ggplot(CAES_data_binary, aes(x = factor(any_impairment), y = Traffic, fill = factor(any_impairment))) +
+  geom_violin(trim = FALSE) +
+  scale_fill_manual(
+    values = c("0" = "lightgray", "1" = "skyblue"),
+    labels = c("No Impairment", "Yes Impairment")
+  ) +
+  labs(
+    title = "Violin Plot of Traffic by Impairment Status",
+    x = "Impairment Presence",
+    y = "Traffic Volume",
+    fill = "Impairment"
+  ) +
+  scale_x_discrete(labels = c("0" = "No Impairment", "1" = "Yes Impairment")) +
+  theme_minimal()
+
+# add blox plot inside
+ggplot(CAES_data_binary, aes(x = factor(any_impairment), y = Traffic, fill = factor(any_impairment))) +
+  geom_violin(trim = FALSE) +
+  geom_boxplot(width = 0.1, fill = "white", outlier.shape = NA) +
+  scale_fill_manual(
+    values = c("0" = "lightgray", "1" = "skyblue"),
+    labels = c("No Impairment", "Yes Impairment")
+  ) +
+  labs(
+    title = "Violin Plot with Boxplot Inside: Traffic by Impairment Status",
+    x = "Impairment Presence",
+    y = "Traffic Volume",
+    fill = "Impairment"
+  ) +
+  scale_x_discrete(labels = c("0" = "No Impairment", "1" = "Yes Impairment")) +
+  theme_minimal()
+
+# add mean points 
+ggplot(CAES_data_binary, aes(x = factor(any_impairment), y = Traffic, fill = factor(any_impairment))) +
+  geom_violin(trim = FALSE) +
+  geom_boxplot(width = 0.1, fill = "black", outlier.shape = NA) +
+  stat_summary(fun = mean, geom = "point", shape = 23, size = 3, fill = "green") +
+  scale_fill_manual(
+    values = c("0" = "lightgray", "1" = "purple"),
+    labels = c("No Impairment", "Yes Impairment")
+  ) +
+  labs(
+    title = "Violin Plot of Traffic by Impairment Status with Mean Points",
+    x = "Impairment Presence",
+    y = "Traffic Volume",
+    fill = "Impairment"
+  ) +
+  scale_x_discrete(labels = c("0" = "No Impairment", "1" = "Yes Impairment")) +
+  theme_minimal()
+
 
 
 
