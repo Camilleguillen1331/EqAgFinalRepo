@@ -3,10 +3,12 @@
 library(arrow)
 library(ggplot2)
 library(dplyr)
+library(gtable)
 
 install.packages("dplyr")
 install.packages("ggplot2")
 install.packages("arrow")
+install.packages("gtable")
 #import data
 
 # # eden path
@@ -14,6 +16,9 @@ install.packages("arrow")
 
 # Cam path
 CAES_data <- read.csv('~/Desktop/EquityAgSB/EqAgFinalRepo/data/CAES.csv' , stringsAsFactors = TRUE )
+
+# Annabel path 
+
 
 
 #subset data to include only the variables we need

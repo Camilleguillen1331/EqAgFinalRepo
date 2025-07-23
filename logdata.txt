@@ -1,3 +1,6 @@
-                    Df   Sum Sq Mean Sq F value Pr(>F)
-Imp..Water.Bodies    1 5.10e+04   50998   0.063  0.802
-Residuals         4841 3.91e+09  807678               
+                    Df    Sum Sq  Mean Sq F value   Pr(>F)    
+Imp__Water_Bodies    1 2.164e+07 21639174   11.49 0.000714 ***
+Residuals         1925 3.625e+09  1883169                     
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+5 observations deleted due to missingness
