@@ -1,7 +1,7 @@
-                    Df    Sum Sq  Mean Sq F value   Pr(>F)    
-Imp__Water_Bodies    1 2.182e+07 21821945   12.27 0.000471 ***
-California_County    9 2.201e+08 24452048   13.75  < 2e-16 ***
-Residuals         1911 3.399e+09  1778671                     
+                    Df    Sum Sq  Mean Sq F value Pr(>F)    
+Imp__Water_Bodies    1 5.568e+05   556845   0.726  0.394    
+California_County    8 1.913e+08 23914641  31.170 <2e-16 ***
+Residuals         1653 1.268e+09   767236                   
 ---
 Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
-5 observations deleted due to missingness
+4 observations deleted due to missingness

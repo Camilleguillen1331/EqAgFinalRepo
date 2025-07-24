@@ -25,7 +25,7 @@ Merged_CAES <- Merged_CAES[c(1,3,17,15,37,45,46)]
 # Filter data for a specific county
 CAES_socal <- Merged_CAES %>%
   filter(California_County %in% c("Imperial", "Los Angeles", "Kern", "Orange", "Riverside",
-                                  "San Bernardino", "San Diego", "San Luis Obispo",
+                                  "San Bernardino", "San Deigo", "San Luis Obispo",
                                   "Santa Barbara", "Ventura")) 
 
 #running regression 
@@ -50,7 +50,7 @@ plot(x =CAES_socal$Traffic, y=CAES_socal$Imp__Water_Bodies)
 #removing outliers 
 
 CAES_socal <- CAES_socal %>%
-  filter(Traffic < 8000)
+  filter(Traffic < 40000)
 
 #removing zeroes
 # taking out zeros 
@@ -135,7 +135,7 @@ CAES_socal$California_County <- factor(CAES_socal$California_County)
 CAES_socal$California_County <- relevel(CAES_socal$California_County, ref = "Los Angeles")
 
 
-ggplot(CAES_socal, aes(x = Traffic, y = Imp__Water_Bodies)) +
+ggplot(Merged_CAES, aes(x = Traffic, y = Imp__Water_Bodies)) +
   geom_point(aes(color = California_County), alpha = 0.5) +
   geom_smooth(method = "lm", color = "black", se = FALSE) +
   scale_color_manual(values = c(
@@ -150,8 +150,9 @@ ggplot(CAES_socal, aes(x = Traffic, y = Imp__Water_Bodies)) +
     "Imperial" = "#1f78b4",
     "Kern" = "#b2df8a"
   )) +
-  labs(title = "Traffic vs. Impaired Water Bodies",
-       x = "Traffic",
-       y = "Impaired Water Bodies",
+  labs(title = "Traffic vs. Impaired Water Bodies Per County (With San Diego)",
+       x = "Traffic Density (Vehicle Kilometers per Hour per Road Length)",
+       y = "Impaired Water Bodies (Number of Pollutants)",
        color = "County") +
   theme_bw()
+
