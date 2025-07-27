@@ -53,9 +53,9 @@ CAES_socal <- CAES_socal %>%
   filter(Traffic < 40000)
 
 #removing zeroes
-# taking out zeros 
- # Merged_CAES_zeros <- Merged_CAES %>%
-  # filter(Imp__Water_Bodies !=0)
+ #taking out zeros 
+  Merged_CAES_zeros <- Merged_CAES %>%
+   filter(Imp__Water_Bodies !=0)
 
 #log transformation 
 
@@ -78,8 +78,8 @@ summary(Regression_one)
  
 
 #ols
-# ols <- lm(logdata ~ Traffic + California_County , data = CAES_socal)
-# summary(ols)
+ ols <- lm(logdata ~ Traffic + California_County , data = CAES_socal)
+summary(ols)
 
 # san deigo 
 # Make sure California_County is a factor
